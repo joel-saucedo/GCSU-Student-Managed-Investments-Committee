@@ -28,7 +28,12 @@ jobs:
         
     - name: Build Linux executable
       run: |
-        pyinstaller SMIC_Portfolio_Analysis.spec
+        echo "Building Linux executable..."
+        pyinstaller --clean SMIC_Portfolio_Analysis.spec
+        if [ $? -ne 0 ]; then
+          echo "❌ PyInstaller build failed!"
+          exit 1
+        fi
         
     - name: Check if executable exists
       run: |

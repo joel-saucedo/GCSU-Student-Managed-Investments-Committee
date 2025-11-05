@@ -28,7 +28,12 @@ jobs:
         
     - name: Build macOS executable
       run: |
-        pyinstaller SMIC_Portfolio_Analysis.spec
+        echo "Building macOS executable..."
+        pyinstaller --clean SMIC_Portfolio_Analysis.spec
+        if [ $? -ne 0 ]; then
+          echo "❌ PyInstaller build failed!"
+          exit 1
+        fi
         
     - name: Create .app bundle if needed
       run: |

@@ -28,7 +28,12 @@ jobs:
         
     - name: Build Windows executable
       run: |
-        pyinstaller SMIC_Portfolio_Analysis.spec
+        echo "Building Windows executable..."
+        pyinstaller --clean SMIC_Portfolio_Analysis.spec
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "❌ PyInstaller build failed!"
+          exit 1
+        }
         
     - name: Check if executable exists
       run: |
