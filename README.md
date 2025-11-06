@@ -61,9 +61,9 @@ where $V_i(t)$ represents the total value of sector $i$ at time $t$ (including b
 
 The S&P 500 (ticker symbol: ^GSPC) is used as the benchmark, normalized to the portfolio's initial value:
 
-$$V_{benchmark}(t) = \frac{P_{S\&P500}(t)}{P_{S\&P500}(0)} \times V_{initial}$$
+$$V_{benchmark}(t) = \frac{P_{SP500}(t)}{P_{SP500}(0)} \times V_{initial}$$
 
-This allows for direct dollar-for-dollar comparison while maintaining percentage return accuracy.
+where $P_{SP500}(t)$ is the S&P 500 price at time $t$, $P_{SP500}(0)$ is the S&P 500 price at the portfolio's inception, and $V_{initial}$ is the initial portfolio value. This allows for direct dollar-for-dollar comparison while maintaining percentage return accuracy.
 
 ## Project Successes
 
