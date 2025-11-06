@@ -59,7 +59,7 @@ where $V_i(t)$ represents the total value of sector $i$ at time $t$ (including b
 
 ### Benchmark Comparison
 
-The S&P 500 ($\text{^GSPC}$) is used as the benchmark, normalized to the portfolio's initial value:
+The S&P 500 (ticker symbol: ^GSPC) is used as the benchmark, normalized to the portfolio's initial value:
 
 $$V_{benchmark}(t) = \frac{P_{S\&P500}(t)}{P_{S\&P500}(0)} \times V_{initial}$$
 
