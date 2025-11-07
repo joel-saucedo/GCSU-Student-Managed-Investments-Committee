@@ -40,11 +40,20 @@ jobs:
             exit 1
           }
       
-      - name: Upload Windows executable
+      - name: Create Windows zip with data
+        run: |
+          New-Item -ItemType Directory -Force -Path "release-package" | Out-Null
+          Copy-Item "dist\SMIC_Portfolio_Analysis.exe" -Destination "release-package\"
+          New-Item -ItemType Directory -Force -Path "release-package\data" | Out-Null
+          Copy-Item "data\transactions.csv" -Destination "release-package\data\"
+          Compress-Archive -Path "release-package\*" -DestinationPath "dist\SMIC_Portfolio_Analysis_windows.zip" -Force
+          Write-Host "Created Windows zip with executable and data file"
+      
+      - name: Upload Windows zip
         uses: actions/upload-artifact@v4
         with:
           name: windows-executable
-          path: dist/SMIC_Portfolio_Analysis.exe
+          path: dist/SMIC_Portfolio_Analysis_windows.zip
           retention-days: 30
 
   build-macos:
@@ -68,10 +77,15 @@ jobs:
         run: |
           python3 -m PyInstaller SMIC_Portfolio_Analysis_macos.spec --clean --noconfirm
       
-      - name: Create macOS zip
+      - name: Create macOS zip with data
         run: |
           cd dist
           zip -r SMIC_Portfolio_Analysis_macos.zip "SMIC Portfolio Analysis.app"
+          cd ..
+          # Also include data directory in zip
+          cd dist
+          zip -r SMIC_Portfolio_Analysis_macos.zip ../data/transactions.csv -j || echo "Note: transactions.csv should be bundled in app"
+          cd ..
       
       - name: Verify build
         run: |
@@ -110,7 +124,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            release/SMIC_Portfolio_Analysis.exe
+            release/SMIC_Portfolio_Analysis_windows.zip
             release/SMIC_Portfolio_Analysis_macos.zip
           draft: false
           prerelease: false
@@ -119,9 +133,9 @@ jobs:
             
             ## Installation
             
-            **Windows:** Download `SMIC_Portfolio_Analysis.exe` and run directly. No installation required.
+            **Windows:** Download `SMIC_Portfolio_Analysis_windows.zip`, extract it, and run `SMIC_Portfolio_Analysis.exe`. The zip includes the executable and `data/transactions.csv` file.
             
-            **macOS:** Download `SMIC_Portfolio_Analysis_macos.zip`, extract, and move the .app to your Applications folder.
+            **macOS:** Download `SMIC_Portfolio_Analysis_macos.zip`, extract it, and move the .app to your Applications folder. The zip includes the application bundle and `transactions.csv` file.
             
             ## Publisher Information
             - **Publisher:** Joel Saucedo - GCSU Student Managed Investment Committee Managing Director
