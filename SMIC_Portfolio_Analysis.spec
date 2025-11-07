@@ -1,9 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.win32.versioninfo import VSVersionInfo, StringFileInfo, StringTable, StringStruct, VarFileInfo, VarStruct, FixedFileInfo
 import os
+import sys
 
-# Collect all data files and binaries
+# Ensure data directory and transaction.csv are included
 datas = [('data', 'data')]
+if os.path.exists('data/transactions.csv'):
+    datas.append(('data/transactions.csv', 'data'))
+
 binaries = []
 hiddenimports = ['PySide6.QtWebEngineWidgets', 'plotly.graph_objects', 'plotly.subplots', 'pandas', 'yfinance', 'numpy', 'plotly']
 
@@ -34,6 +39,41 @@ a = Analysis(
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=None)
 
+# Windows version info
+version_info = VSVersionInfo(
+    ffi=FixedFileInfo(
+        filevers=(1, 0, 0, 0),
+        prodvers=(1, 0, 0, 0),
+        mask=0x3f,
+        flags=0x0,
+        OS=0x40004,
+        fileType=0x1,
+        subtype=0x0,
+        date=(0, 0)
+    ),
+    kids=[
+        StringFileInfo(
+            [
+                StringTable(
+                    u'040904B0',
+                    [
+                        StringStruct(u'CompanyName', u'GCSU Student Managed Investment Committee'),
+                        StringStruct(u'FileDescription', u'SMIC Portfolio Analysis Tool'),
+                        StringStruct(u'FileVersion', u'1.0.0.0'),
+                        StringStruct(u'InternalName', u'SMIC_Portfolio_Analysis'),
+                        StringStruct(u'LegalCopyright', u'Copyright (C) 2024-2025 Joel Saucedo, GCSU Student Managed Investment Committee. All rights reserved.'),
+                        StringStruct(u'OriginalFilename', u'SMIC_Portfolio_Analysis.exe'),
+                        StringStruct(u'ProductName', u'SMIC Portfolio Analysis'),
+                        StringStruct(u'ProductVersion', u'1.0.0.0'),
+                        StringStruct(u'Publisher', u'Joel Saucedo - GCSU Student Managed Investment Committee Managing Director')
+                    ]
+                )
+            ]
+        ),
+        VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
+    ]
+)
+
 exe = EXE(
     pyz,
     a.scripts,
@@ -54,4 +94,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    version='version_info.txt' if os.name == 'nt' else None,
+    icon=None,
 )
