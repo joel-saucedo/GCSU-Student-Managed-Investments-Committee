@@ -29,11 +29,12 @@ jobs:
           pyinstaller SMIC_Portfolio_Analysis.spec --clean --noconfirm
       
       - name: Verify data files included
+        shell: cmd
         run: |
-          if not exist "dist\SMIC_Portfolio_Analysis.exe" exit 1
-          echo "Build successful"
-          echo "Verifying data directory is included..."
-          dir /s /b dist\*data* 2>nul || echo "Note: Data files should be bundled in executable"
+          if not exist "dist\SMIC_Portfolio_Analysis.exe" exit /b 1
+          echo Build successful
+          echo Verifying data directory is included...
+          dir /s /b dist\*data* 2>nul || echo Note: Data files should be bundled in executable
       
       - name: Upload Windows executable
         uses: actions/upload-artifact@v4
